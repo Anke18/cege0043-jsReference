@@ -4,6 +4,7 @@ function trackAndCircle(){
 	//addPointLinePoly();
 	//getEarthquakes();
 	getPort();
+	//startFormDataLoad();
 	loadW3HTML();
 }
 
