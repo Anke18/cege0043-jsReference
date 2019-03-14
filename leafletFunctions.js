@@ -48,4 +48,36 @@ function loadFormData(formData)
 	mymap.fitBounds(formLayer.getBounds());
 }
 
+// create the code to get the Earthquakes data using an XMLHttpRequest
+//http://developer.cege.ucl.ac.uk:30312/getGeoJSON/london_poi/geom
+//http://developer.cege.ucl.ac.uk:30312/getGeoJSON/london_highway/geom
+function getEarthquakes()
+{
+	client = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+httpPortNumber;
+	url = url + "/getGeoJSON/london_highway/geom";
+	client.open("GET", url, true);
+	client.onreadystatechange = earthquakeResponse;// not earthquakeResponse()
+	client.send();
+}
 
+function earthquakeResponse() 
+{
+	if (client.readyState == 4) 
+	{
+		var earthquakedata = client.responseText;
+		loadEarthquakelayer(earthquakedata);
+	}
+}
+		
+// convert the received data
+function loadEarthquakelayer(earthquakedata) 
+{
+	// convert the text to JSON
+	var earthquakejson = JSON.parse(earthquakedata);
+	earthquakes = earthquakejson;
+	// add the JSON layer onto the map
+	earthquakelayer = L.geoJson(earthquakejson).addTo(mymap);
+	// change the map zoom so that all the data is shown
+	mymap.fitBounds(earthquakelayer.getBounds());
+}
