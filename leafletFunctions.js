@@ -16,9 +16,10 @@ function addPointLinePoly()
 
 function startFormDataLoad()
 {
+	alert("Port2 : " + httpPortNumber);
 	xhrFormData = new XMLHttpRequest();
-	var url = "http://developer.cege.ucl.ac.uk:"+30312;
-	url = url + "/getFormData/"+30312;
+	var url = "http://developer.cege.ucl.ac.uk:"+httpPortNumber;
+	url = url + "/getFormData/"+httpPortNumber;
 	xhrFormData.open("GET", url, true);
 	xhrFormData.onreadystatechange = formDataResponse;
 	xhrFormData.send();
