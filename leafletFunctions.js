@@ -1,82 +1,100 @@
+/*-----------------------------------------------------------
+
+Code for Version1(achieved Core Functionality1)
+
+Use for loop to make the manually clicks points and show questions work...
+
+------------------------------------------------------------*/
+
+
 // create a variable that will hold the XMLHttpRequest()
 var client;
-var earthquakes;
-var xhrFormData;
-var formLayer;
+var xhrQuestionData;
+var questionLayer;
 
-function addPointLinePoly()
+// here modify code for core functionality1
+function startQuestionDataLoad()
 {
-	// add a point
-	L.marker([51.5, -0.09]).addTo(mymap).bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
-	// add a circle
-	L.circle([51.508, -0.11], 500, {color: 'red', fillColor: '#f03', fillOpacity: 0.5}).addTo(mymap).bindPopup("I am a circle.");
-	// add a polygon
-	var myPolygon = L.polygon([[51.509, -0.08], [51.503, -0.06], [51.51, -0.047]],{color: 'red', fillColor: '#f03', fillOpacity: 0.5}).addTo(mymap).bindPopup("I am a polygon");
-}
-
-function startFormDataLoad()
-{
-	alert("Port2 : " + httpPortNumber);
-	xhrFormData = new XMLHttpRequest();
+	//alert("Port2 : " + httpPortNumber);
+	xhrQuestionData = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
-	url = url + "/getFormData/"+ httpPortNumber;
-	xhrFormData.open("GET", url, true);
-	xhrFormData.onreadystatechange = formDataResponse;
-	xhrFormData.send();
+	url = url + "/getQuizPoints/"+ httpPortNumber;
+	xhrQuestionData.open("GET", url, true);
+	xhrQuestionData.onreadystatechange = questionDataResponse;
+	xhrQuestionData.send();
 }
 
-function formDataResponse()
+function questionDataResponse()
 {
-	if (xhrFormData.readyState == 4)
+	if (xhrQuestionData.readyState == 4)
 	{
-		// once the data is ready, process the data
-		var formData = xhrFormData.responseText;
-		loadFormData(formData);
+		// if data is ready, process the data
+		var questionData = xhrQuestionData.responseText;
+		loadQuestionData(questionData);
 	}
 }
 
-function loadFormData(formData)
+// load points version 1
+function loadQuestionData(questionData)
 {
-	// convert the text received from the server to JSON
-	var formJSON = JSON.parse(formData);
-	// load the geoJSON layer
-	formLayer = L.geoJson(formJSON,
+	var questionJSON = JSON.parse(questionData);
+	// store points and questions in markers
+	var markers = [];
+	// use i to count points
+	var i;
+	i = 0;
+	L.geoJson(questionJSON,
 	{
 		// use point to layer to create the points
 		pointToLayer: function(feature, latlng)
 		{
-			// in this case, we build an HTML DIV string
-			// using the values in the data
-			var htmlString = "<DIV id='popup'"+ feature.properties.id + "><h2>" +
-			feature.properties.name + "</h2><br>";
-			htmlString = htmlString + "<h3>"+feature.properties.surname + "</h3><br>";
+			// modify htmlString to show questions, modify the fontsize, 5/6 seems to be suitable
+			var htmlString = "<DIV id='popup'"+ feature.properties.id + "><h5>" +
+			feature.properties.question_title + "</h5>";
+			htmlString = "<br>" + htmlString + "<h6>"+feature.properties.question_text+"</h6>";
+			
+			htmlString = "<br>" + htmlString + "<input type='radio' name='answer' id='"
+			+feature.properties.id+"_1'/>"+feature.properties.answer_1+"<br>";
 			htmlString = htmlString + "<input type='radio' name='answer' id='"
-			+feature.properties.id+"_1'/>"+feature.properties.module+"<br>";
+			+feature.properties.id+"_2'/>"+feature.properties.answer_2+"<br>";
 			htmlString = htmlString + "<input type='radio' name='answer' id='"
-			+feature.properties.id+"_2'/>"+feature.properties.language+"<br>";
+			+feature.properties.id+"_3'/>"+feature.properties.answer_3+"<br>";
 			htmlString = htmlString + "<input type='radio' name='answer' id='"
-			+feature.properties.id+"_3'/>"+feature.properties.lecturetime+"<br>";
-			htmlString = htmlString + "<input type='radio' name='answer' id='"
-			+feature.properties.id+"_4'/>"+feature.properties.port_id+"<br>";
+			+feature.properties.id+"_4'/>"+feature.properties.answer_4+"<br><br>";
+			
 			htmlString = htmlString + "<button onclick='checkAnswer("
 			+feature.properties.id + ");return false;'>Submit Answer</button>";
-			// now include a hidden element with the answer
-			// in this case the answer is alwasy the first choice
-			// for the assignment this will of course vary - > can use feature.properties.correct_answer
-			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>1</div>";
+			// a hidden element with the right answer
+			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
 			htmlString = htmlString + "</div>";
-			return L.marker(latlng).bindPopup(htmlString);
+			// store points
+			markers[i] = new L.Marker(latlng, {Qinfor: htmlString});
+			i = i + 1; // move to the next
 		},
-	}).addTo(mymap);
-	mymap.fitBounds(formLayer.getBounds());
+	});
+	// add points in the map, add click function
+	for(var j=0;j<i;j++)
+	{
+		markers[j].addTo(mymap);
+		markers[j].on('click', pointClick);
+	}
+	// set view to UCL
+	mymap.setView(new L.LatLng(51.525086, -0.132609), 16);
+}
+
+// Click function, click to show points questions
+function pointClick(e) 
+{
+	var getPString = this.options.Qinfor;
+	//alert(getPString);
+	document.getElementById('showquestiontext').innerHTML = getPString;
 }
 
 function checkAnswer(questionID) 
 {
-	// get the answer from the hidden div
-	// NB - do this BEFORE you close the pop-up as when you close the pop-up the DIV is destroyed
+	// get the right answer from the hidden div
 	var answer = document.getElementById("answer"+questionID).innerHTML;
-	// now check the question radio buttons
+	// check the question radio buttons
 	var correctAnswer = false;
 	var answerSelected = 0;
 	for(var i=1; i < 5; i++) 
@@ -93,82 +111,7 @@ function checkAnswer(questionID)
 	}
 	if (correctAnswer === false)
 	{
-		// they didn't get it right
+		// wrong
 		alert("Better luck next time");
 	}
-	// now close the popup
-	mymap.closePopup();
-	// the code to upload the answer to the server would go here
-	// call an AJAX routine using the data
-	// the answerSelected variable holds the number of the answer
-	// that the user picked
-}
-
-function closestFormPoint()
-{
-	// take the leaflet formdata layer
-	// go through each point one by one
-	// and measure the distance to Warren Street
-	// for the closest point show the pop up of that point
-	var minDistance = 100000000000;
-	var closestFormPoint = 0;
-	// for this example, use the latitude/longitude of warren street
-	// in assignment replace this with the user's location
-	var userlat = 51.524048;
-	var userlng = -0.139924;
-	formLayer.eachLayer(function(layer) 
-	{
-		var distance = calculateDistance(userlat,userlng,layer.getLatLng().lat, layer.getLatLng().lng, 'K');
-		if (distance < minDistance)
-		{
-			minDistance = distance;
-			closestFormPoint = layer.feature.properties.id;
-		}
-	});
-	// for this to be a proximity alert, the minDistance must be
-	// closer than a given distance - you can check that here
-	// using an if statement
-	// show the popup for the closest point
-	formLayer.eachLayer(function(layer) 
-	{
-		if (layer.feature.properties.id == closestFormPoint)
-		{
-			layer.openPopup();
-		}
-	});
-}
-
-
-// create the code to get the Earthquakes data using an XMLHttpRequest
-//http://developer.cege.ucl.ac.uk:30312/getGeoJSON/london_poi/geom
-//http://developer.cege.ucl.ac.uk:30312/getGeoJSON/london_highway/geom
-function getEarthquakes()
-{
-	client = new XMLHttpRequest();
-	var url = "http://developer.cege.ucl.ac.uk:"+httpPortNumber;
-	url = url + "/getGeoJSON/london_highway/geom";
-	client.open("GET", url, true);
-	client.onreadystatechange = earthquakeResponse;// not earthquakeResponse()
-	client.send();
-}
-
-function earthquakeResponse() 
-{
-	if (client.readyState == 4) 
-	{
-		var earthquakedata = client.responseText;
-		loadEarthquakelayer(earthquakedata);
-	}
-}
-		
-// convert the received data
-function loadEarthquakelayer(earthquakedata) 
-{
-	// convert the text to JSON
-	var earthquakejson = JSON.parse(earthquakedata);
-	earthquakes = earthquakejson;
-	// add the JSON layer onto the map
-	earthquakelayer = L.geoJson(earthquakejson).addTo(mymap);
-	// change the map zoom so that all the data is shown
-	mymap.fitBounds(earthquakelayer.getBounds());
 }
