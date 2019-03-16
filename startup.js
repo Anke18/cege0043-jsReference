@@ -1,5 +1,5 @@
-function trackAndCircle(){
-		
+function trackAndCircle()
+{
 	//trackLocation();
 	//addPointLinePoly();
 	//getEarthquakes();
@@ -8,7 +8,8 @@ function trackAndCircle(){
 	loadW3HTML();
 }
 
-function startup(){
+function startup()
+{
 	document.addEventListener('DOMContentLoaded',
 	function(){trackAndCircle();}, false);
 }

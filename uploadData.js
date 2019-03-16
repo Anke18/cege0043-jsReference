@@ -1,30 +1,33 @@
 var client;
 
-function startDataUpload() 
+function startDataUpload()
 {
-	var name = document.getElementById("name").value;
-	var surname = document.getElementById("surname").value;
-	var module = document.getElementById("module").value;
-	var postString = "name="+name+"&surname="+surname+"&module="+module;
-	var checkString = "";
-	for(var i=1;i<5;i++)
+	var question_title = document.getElementById("question_title").value;
+	var question_text = document.getElementById("question_text").value;
+	var answer_1 = document.getElementById("answer_1").value;
+	var answer_2 = document.getElementById("answer_2").value;
+	var answer_3 = document.getElementById("answer_3").value;
+	var answer_4 = document.getElementById("answer_4").value;
+	
+	var postString = "question_title="+question_title+"&question_text="+question_text;
+	postString = postString+"&answer_1="+answer_1+"&answer_2="+answer_2+"&answer_3="+answer_3+"&answer_4="+answer_4;
+	postString = postString + "&port_id=" + httpPortNumber;
+	if (document.getElementById("A1").checked)
 	{
-		if (document.getElementById("check"+i).checked === true)
-		{
-			checkString = checkString + document.getElementById("check"+i).value + "||";
-		}
+		postString = postString + "&correct_answer=1";
 	}
-	postString = postString + "&modulelist=" + checkString;
-	if (document.getElementById("morning").checked)
+	if (document.getElementById("A2").checked)
 	{
-		postString = postString + "&lecturetime=morning";
+		postString = postString + "&correct_answer=2";
 	}
-	if (document.getElementById("afternoon").checked)
+	if (document.getElementById("A3").checked)
 	{
-		postString = postString + "&lecturetime=afternoon";
+		postString = postString + "&correct_answer=3";
 	}
-	var language = document.getElementById("languageselectbox").value;
-	postString = postString + "&language=" + language;
+	if (document.getElementById("A4").checked)
+	{
+		postString = postString + "&correct_answer=4";
+	}
 	var latitude = document.getElementById("latitude").value;
 	var longitude = document.getElementById("longitude").value;
 	postString = postString + "&latitude=" + latitude + "&longitude=" + longitude;
@@ -35,8 +38,7 @@ function startDataUpload()
 function processData(postString) 
 {
 	client = new XMLHttpRequest();
-	postString = postString + "&port_id=" + httpPortNumber;
-	var url = 'http://developer.cege.ucl.ac.uk:'+ httpPortNumber + "/uploadData";
+	var url = 'http://developer.cege.ucl.ac.uk:'+ httpPortNumber + "/uploadQuestion";
 	client.open('POST',url,true);
 	client.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	client.onreadystatechange = dataUploaded;
