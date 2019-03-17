@@ -1,17 +1,41 @@
-function trackAndCircle()
+/*-----------------------------------------------------------
+
+Code for Version2 for Core Functionality2 (in process):
+
+In order to differentiate two app:
++ autoQuestionset()
++ startupQuestions()
++ autoQuizset()
++ startupQuiz()
+- trackAndCircle()
+- startup()
+
+------------------------------------------------------------*/
+
+// for questions app 
+function autoQuestionset()
 {
-	//trackLocation();
-	//addPointLinePoly();
-	//getEarthquakes();
 	getPort();
-	//startFormDataLoad();
 	loadW3HTML();
 }
 
-function startup()
+function startupQuestions()
 {
 	document.addEventListener('DOMContentLoaded',
-	function(){trackAndCircle();}, false);
+	function(){autoQuestionset();}, false);
+}
+
+// for quiz app
+function autoQuizset()
+{
+	getPort();
+	loadW3HTML();
+}
+
+function startupQuiz()
+{
+	document.addEventListener('DOMContentLoaded',
+	function(){autoQuizset();}, false);
 }
 
 function loadW3HTML()
