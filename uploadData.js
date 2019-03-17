@@ -2,6 +2,7 @@ var client;
 
 function startDataUpload()
 {
+	var check = true;
 	var question_title = document.getElementById("question_title").value;
 	var question_text = document.getElementById("question_text").value;
 	var answer_1 = document.getElementById("answer_1").value;
@@ -16,27 +17,44 @@ function startDataUpload()
 	{
 		postString = postString + "&correct_answer=1";
 	}
-	if (document.getElementById("A2").checked)
+	else if (document.getElementById("A2").checked)
 	{
 		postString = postString + "&correct_answer=2";
 	}
-	if (document.getElementById("A3").checked)
+	else if (document.getElementById("A3").checked)
 	{
 		postString = postString + "&correct_answer=3";
 	}
-	if (document.getElementById("A4").checked)
+	else if (document.getElementById("A4").checked)
 	{
 		postString = postString + "&correct_answer=4";
+	}
+	else
+	{
+		alert("234");
+		check = false;
 	}
 	var latitude = document.getElementById("latitude").value;
 	var longitude = document.getElementById("longitude").value;
 	postString = postString + "&latitude=" + latitude + "&longitude=" + longitude;
-	alert(postString);
-	processData(postString);
+	
+	if (check = false||question_title==null||question_text==null||answer_1==null||answer_2==null||answer_3==null||answer_4==null||latitude==null||longitude==null)
+	{
+		alert("Please fill all required fields");
+		check = false;
+	}
+	else
+	{
+		alert("234123");
+		processData(postString);
+	}
+	//alert(postString);
+	//processData(postString);
 }
 
 function processData(postString) 
 {
+	alert("2343423424");
 	client = new XMLHttpRequest();
 	var url = 'http://developer.cege.ucl.ac.uk:'+ httpPortNumber + "/uploadQuestion";
 	client.open('POST',url,true);
