@@ -1,11 +1,25 @@
 /*-----------------------------------------------------------
 
-Code for Version1(achieved Core Functionality1)
+Code for Version2 for Core Functionality2 (in process)
 
-Use for loop to make the manually clicks points and show questions work...
+Modify for questions app:
+
++ onMapClick function (and add it to the map)
 
 ------------------------------------------------------------*/
-
+// for questions, get location
+function onMapClick(e)
+{
+	// create a custom popup
+	var popupLocation = L.popup();
+	// location: e.latlng.lat, e.latlng.lng
+	// e.latlng -> eg. LatLng(51.50009, -0.08748)
+	popupLocation.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(mymap);
+	document.getElementById("latitude").value = e.latlng.lat;
+	document.getElementById("longitude").value = e.latlng.lng;
+}
+// now add the click event detector to the map
+mymap.on('click', onMapClick);
 
 // create a variable that will hold the XMLHttpRequest()
 var client;
