@@ -5,8 +5,11 @@ Code for Version2 for Core Functionality2 (in process)
 Modify for questions app:
 
 + onMapClick function (and add it to the map)
+- pointClick function
+* Update loadQuestionData function, add popup (I love the div one?
 
 ------------------------------------------------------------*/
+
 // for questions, get location
 function onMapClick(e)
 {
@@ -48,21 +51,17 @@ function questionDataResponse()
 	}
 }
 
-// load points version 1
+// load points version 2
 function loadQuestionData(questionData)
 {
+	// convert text to JSON
 	var questionJSON = JSON.parse(questionData);
-	// store points and questions in markers
-	var markers = [];
-	// use i to count points
-	var i;
-	i = 0;
-	L.geoJson(questionJSON,
+	// load the geoJSON questionLayer
+	questionLayer = L.geoJson(questionJSON,
 	{
-		// use point to layer to create the points
+		// create the quiz points
 		pointToLayer: function(feature, latlng)
 		{
-			// modify htmlString to show questions, modify the fontsize, 5/6 seems to be suitable
 			var htmlString = "<DIV id='popup'"+ feature.properties.id + "><h5>" +
 			feature.properties.question_title + "</h5>";
 			htmlString = "<br>" + htmlString + "<h6>"+feature.properties.question_text+"</h6>";
@@ -78,30 +77,13 @@ function loadQuestionData(questionData)
 			
 			htmlString = htmlString + "<button onclick='checkAnswer("
 			+feature.properties.id + ");return false;'>Submit Answer</button>";
-			// a hidden element with the right answer
+			
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
 			htmlString = htmlString + "</div>";
-			// store points
-			markers[i] = new L.Marker(latlng, {Qinfor: htmlString});
-			i = i + 1; // move to the next
+			return L.marker(latlng).bindPopup(htmlString);
 		},
-	});
-	// add points in the map, add click function
-	for(var j=0;j<i;j++)
-	{
-		markers[j].addTo(mymap);
-		markers[j].on('click', pointClick);
-	}
-	// set view to UCL
-	mymap.setView(new L.LatLng(51.525086, -0.132609), 16);
-}
-
-// Click function, click to show points questions
-function pointClick(e) 
-{
-	var getPString = this.options.Qinfor;
-	//alert(getPString);
-	document.getElementById('showquestiontext').innerHTML = getPString;
+	}).addTo(mymap);
+	mymap.fitBounds(questionLayer.getBounds());
 }
 
 function checkAnswer(questionID) 
