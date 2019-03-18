@@ -1,14 +1,8 @@
 /*-----------------------------------------------------------
 
-Code for Version2 for Core Functionality2 (in process):
+Code for Version3 for Core Functionality3 (in process):
 
-In order to differentiate two app:
-+ autoQuestionset()
-+ startupQuestions()
-+ autoQuizset()
-+ startupQuiz()
-- trackAndCircle()
-- startup()
+
 
 ------------------------------------------------------------*/
 
@@ -29,6 +23,7 @@ function startupQuestions()
 function autoQuizset()
 {
 	getPort();
+	trackLocation();
 	loadW3HTML();
 }
 
