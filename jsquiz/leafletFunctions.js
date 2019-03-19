@@ -3,6 +3,11 @@
 Code for Version3 for Core Functionality3
 
 ------------------------------------------------------------*/
+// create a variable that will hold the XMLHttpRequest()
+var client;
+var xhrQuestionData;
+var questionLayer;
+var questionJSON;
 
 // for questions, get location
 function onMapClick(e)
@@ -15,11 +20,6 @@ function onMapClick(e)
 }
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
-
-// create a variable that will hold the XMLHttpRequest()
-var client;
-var xhrQuestionData;
-var questionLayer;
 
 // here modify code for core functionality1
 function startQuestionDataLoad()
@@ -54,7 +54,7 @@ function questionDataResponse()
 function loadQuestionData(questionData)
 {
 	// convert text to JSON
-	var questionJSON = JSON.parse(questionData);
+	questionJSON = JSON.parse(questionData);
 	// load the geoJSON questionLayer
 	questionLayer = L.geoJson(questionJSON,
 	{

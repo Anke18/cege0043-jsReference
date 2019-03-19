@@ -11,66 +11,52 @@ function getPosition(position)
 {
 	var userPositionString = "User start location: " + "<br>Latitude: " + position.coords.latitude +"<br>Longitude: " + position.coords.longitude;
 	document.getElementById("showLocation").innerHTML = userPositionString;
+	getDistance();
 }
-
-/* C3 do not need...
-function trackLocation()
-{
-	if(navigator.geolocation)
-	{
-		navigator.geolocation.watchPosition(showPosition);
-		alert("Loading Current Location");
-	}
-	else 
-	{
-		document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
-	}
-}
-
-function showPosition(position)
-{
-	if (userMarker)
-	{
-		mymap.removeLayer(userMarker);
-	}
-    userMarker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap).bindPopup("You are here!").openPopup();
-    mymap.locate({setView: true, maxZoom: 16});
-	getDistance(); 
-	//CF3 do not need
-}
-*/
 
 function getDistance()
 {
-	//alert('getting distance');
+	alert('getting distance');
 	navigator.geolocation.getCurrentPosition(getDistanceFromMultiplePoints);
-}
-
-function getDistanceFromPoint(position)
-{
-	var lat = 51.524479;
-	var lng = -0.133894;
-	var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
-	//document.getElementById('showDistance').innerHTML = "Distance: " + distance;
-	if (distance < 0.1) {alert('You are close to UCL!');}
 }
 
 function getDistanceFromMultiplePoints(position)
 {
+	//alert('getting distance : '+position);
+	//alert(questionJSON[0].features.length);
 	var minDistance = 100000000000;
-	var closestQuake = "";
-	for(var i = 0; i < earthquakes.features.length; i++)
+	var closestQuiz = "";
+	var count = 0;
+	for(var i = 0; i < questionJSON[0].features.length; i++)
 	{
-		var obj = earthquakes.features[i];
+		var obj = questionJSON[0].features[i];
+		//alert("ppp "+questionJSON[0].features[i]);
+		//alert("geometry: "+" i :"+obj.geometry.coordinates[0]+" , "+obj.geometry.coordinates[1]);
 		var distance = calculateDistance(position.coords.latitude,position.coords.longitude,
-		obj.geometry.coordinates[0],obj.geometry.coordinates[1],'K');
+		obj.geometry.coordinates[1],obj.geometry.coordinates[0],'K');
+		//alert("111 :" + i + " :" + distance);
 		if (distance < minDistance)
 		{
 			minDistance = distance;
-			closestQuake = obj.properties.place;
+			closestQuiz = obj.properties.id;
+			count = i;
+			//alert('minDistance : '+minDistance);
 		}
 	}
-	alert("Earthquake: " + closestQuake + " is distance " + minDistance + "away");
+	alert("Quiz: " + closestQuiz + " is distance " + minDistance + "away");
+	//alert(count);
+	//alert(questionLayer);
+	//alert(questionLayer.features[count]);
+	//questionLayer.openPopup();
+	//alert(questionJSON[0].features[count].geometry.coordinates);
+	//L.marker(questionJSON[0].features[count].geometry.coordinates).openPopup();
+	//alert(questionJSON[0].features[count].properties.popupContent);
+	//L.marker(latlng).bindPopup(htmlString);
+	//marker.bindPopup(popupContent).openPopup();
+	//if (questionJSON[0].features[count].properties && questionJSON[0].features[count].properties.popupContent)
+	//{
+	//	questionJSON[0].features[count].openPopup();
+	//}
 }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
@@ -89,5 +75,6 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit)
 	// radius of the earth - 3956 miles
 	if (unit=="K") { dist = dist * 1.609344 ;} // miles to km
 	if (unit=="N") { dist = dist * 0.8684 ;} // miles to nautical miles
+	//alert("222 :" + dist);
 	return dist;
 }
