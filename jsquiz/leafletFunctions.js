@@ -24,6 +24,13 @@ var questionLayer;
 // here modify code for core functionality1
 function startQuestionDataLoad()
 {
+	// remove old points everytime
+	if(questionLayer != undefined) 
+	{
+		mymap.removeLayer(questionLayer);
+	};
+	//questionLayer.clearLayers();
+	//mymap.removeLayer(questionLayer);
 	//alert("Port2 : " + httpPortNumber);
 	xhrQuestionData = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
@@ -43,7 +50,7 @@ function questionDataResponse()
 	}
 }
 
-// load points version 2
+// load points version 3
 function loadQuestionData(questionData)
 {
 	// convert text to JSON
@@ -71,6 +78,7 @@ function loadQuestionData(questionData)
 			+feature.properties.id + ");return false;'>Submit Answer</button>";
 			
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
+			// add div to show upload answer results
 			htmlString = htmlString + "<br/><div id=answerUploadResult> The result of the upload goes here </div>";
 			htmlString = htmlString + "</div>";
 			return L.marker(latlng).bindPopup(htmlString);
@@ -103,6 +111,8 @@ function checkAnswer(questionID)
 		// wrong
 		alert("Better luck next time");
 	}
+	// create answer string to send back
 	var postAnswerString ="port_id="+httpPortNumber+"&question_id="+questionID+"&answer_selected="+answerSelected+"&correct_answer="+answer;
+	// uploadData.js for sending back answers
 	startAnswerUpload(postAnswerString);
 }

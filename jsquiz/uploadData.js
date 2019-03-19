@@ -20,7 +20,7 @@ function answerDataUploaded()
 {
 	if (client.readyState == 4)
 	{
-		//alert("Your answer was submitted!");
+		//alert("Your answer was submitted!"); change alert to div
 		document.getElementById("answerUploadResult").innerHTML = client.responseText;
 	}
 }
