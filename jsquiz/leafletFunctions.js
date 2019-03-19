@@ -71,6 +71,7 @@ function loadQuestionData(questionData)
 			+feature.properties.id + ");return false;'>Submit Answer</button>";
 			
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
+			htmlString = htmlString + "<br/><div id=answerUploadResult> The result of the upload goes here </div>";
 			htmlString = htmlString + "</div>";
 			return L.marker(latlng).bindPopup(htmlString);
 		},
