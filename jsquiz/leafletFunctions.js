@@ -35,7 +35,7 @@ function startQuestionDataLoad()
 
 function questionDataResponse()
 {
-	if (xhrQuestionData.readyState == 4)
+	if(xhrQuestionData.readyState == 4)
 	{
 		// if data is ready, process the data
 		var questionData = xhrQuestionData.responseText;
@@ -58,13 +58,13 @@ function loadQuestionData(questionData)
 			feature.properties.question_title + "</h5>";
 			htmlString = "<br>" + htmlString + "<h6>"+feature.properties.question_text+"</h6>";
 			
-			htmlString = "<br>" + htmlString + "<input type='radio' name='answer' id='"
+			htmlString = "<br>" + htmlString + "<input type='radio' name='useranswer' id='"
 			+feature.properties.id+"_1'/>"+feature.properties.answer_1+"<br>";
-			htmlString = htmlString + "<input type='radio' name='answer' id='"
+			htmlString = htmlString + "<input type='radio' name='useranswer' id='"
 			+feature.properties.id+"_2'/>"+feature.properties.answer_2+"<br>";
-			htmlString = htmlString + "<input type='radio' name='answer' id='"
+			htmlString = htmlString + "<input type='radio' name='useranswer' id='"
 			+feature.properties.id+"_3'/>"+feature.properties.answer_3+"<br>";
-			htmlString = htmlString + "<input type='radio' name='answer' id='"
+			htmlString = htmlString + "<input type='radio' name='useranswer' id='"
 			+feature.properties.id+"_4'/>"+feature.properties.answer_4+"<br><br>";
 			
 			htmlString = htmlString + "<button onclick='checkAnswer("
@@ -85,21 +85,23 @@ function checkAnswer(questionID)
 	// check the question radio buttons
 	var correctAnswer = false;
 	var answerSelected = 0;
-	for(var i=1; i < 5; i++) 
+	for(var i=1; i < 5; i++)
 	{
-		if (document.getElementById(questionID+"_"+i).checked)
+		if(document.getElementById(questionID+"_"+i).checked)
 		{
 			answerSelected = i;
 		}
-		if((document.getElementById(questionID+"_"+i).checked) && (i == answer)) 
+		if((document.getElementById(questionID+"_"+i).checked) && (i == answer))
 		{
 			alert ("Well done");
 			correctAnswer = true;
 		}
 	}
-	if (correctAnswer === false)
+	if(correctAnswer === false)
 	{
 		// wrong
 		alert("Better luck next time");
 	}
+	var postAnswerString ="port_id="+httpPortNumber+"&question_id="+questionID+"&answer_selected="+answerSelected+"&correct_answer="+answer;
+	startAnswerUpload(postAnswerString);
 }
