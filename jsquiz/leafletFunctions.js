@@ -1,7 +1,5 @@
 /*-----------------------------------------------------------
-
-Code for Version3 for Core Functionality3
-
+Code for Version4 for AF1
 ------------------------------------------------------------*/
 // create a variable that will hold the XMLHttpRequest()
 var client;
@@ -46,15 +44,23 @@ function questionDataResponse()
 	{
 		// if data is ready, process the data
 		var questionData = xhrQuestionData.responseText;
-		loadQuestionData(questionData);
+		loadQuestionData1(questionData);
 	}
 }
 
-// load points version 3
-function loadQuestionData(questionData)
+// could only test on the phone, which makes it hard to debug
+// have to apart the function to let the questionJSON to be used to get the closestQuiz, and send it back...(mad
+function loadQuestionData1(questionData)
 {
-	// convert text to JSON
 	questionJSON = JSON.parse(questionData);
+	navigator.geolocation.getCurrentPosition(getDistanceFromMultiplePoints);
+}
+
+function loadQuestionData2()
+{
+	var quizMarker,openMarker;
+	//alert("kkk :"+closestQuiz);
+	// getDistanceFromMultiplePoints();
 	// load the geoJSON questionLayer
 	questionLayer = L.geoJson(questionJSON,
 	{
@@ -81,9 +87,22 @@ function loadQuestionData(questionData)
 			// add div to show upload answer results
 			htmlString = htmlString + "<br/><div id=answerUploadResult> The result of the upload goes here </div>";
 			htmlString = htmlString + "</div>";
-			return L.marker(latlng).bindPopup(htmlString);
+			//return L.marker(latlng).bindPopup(htmlString);
+			alert(closestQuiz+"kkk :" +feature.properties.id);
+			if(feature.properties.id == closestQuiz)
+			{
+				//alert("got111");
+				return openMarker = L.marker(latlng).bindPopup(htmlString);
+			}
+			//L.marker(latlng).bindPopup(htmlString);
+			else
+			{
+				//alert("got222");
+				return quizMarker = L.marker(latlng).bindPopup(htmlString);
+			}
 		},
 	}).addTo(mymap);
+	openMarker.openPopup();
 	mymap.fitBounds(questionLayer.getBounds());
 }
 

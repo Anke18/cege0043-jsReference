@@ -1,31 +1,33 @@
 var userMarker;
+var closestQuiz;
 
 // it's important to note that this function only allow to show on the phone?
 function trackLocation()
 {
 	alert('getting location');
 	navigator.geolocation.getCurrentPosition(getPosition);
+	//getDistanceFromMultiplePoints();
 }
 	
 function getPosition(position)
 {
 	var userPositionString = "User start location: " + "<br>Latitude: " + position.coords.latitude +"<br>Longitude: " + position.coords.longitude;
 	document.getElementById("showLocation").innerHTML = userPositionString;
-	getDistance();
+	//getDistance();
 }
-
+/*
 function getDistance()
 {
 	alert('getting distance');
 	navigator.geolocation.getCurrentPosition(getDistanceFromMultiplePoints);
-}
+}*/
 
 function getDistanceFromMultiplePoints(position)
 {
 	//alert('getting distance : '+position);
 	//alert(questionJSON[0].features.length);
 	var minDistance = 100000000000;
-	var closestQuiz = "";
+	closestQuiz = "";
 	var count = 0;
 	for(var i = 0; i < questionJSON[0].features.length; i++)
 	{
@@ -44,19 +46,7 @@ function getDistanceFromMultiplePoints(position)
 		}
 	}
 	alert("Quiz: " + closestQuiz + " is distance " + minDistance + "away");
-	//alert(count);
-	//alert(questionLayer);
-	//alert(questionLayer.features[count]);
-	//questionLayer.openPopup();
-	//alert(questionJSON[0].features[count].geometry.coordinates);
-	//L.marker(questionJSON[0].features[count].geometry.coordinates).openPopup();
-	//alert(questionJSON[0].features[count].properties.popupContent);
-	//L.marker(latlng).bindPopup(htmlString);
-	//marker.bindPopup(popupContent).openPopup();
-	//if (questionJSON[0].features[count].properties && questionJSON[0].features[count].properties.popupContent)
-	//{
-	//	questionJSON[0].features[count].openPopup();
-	//}
+	loadQuestionData2();
 }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
