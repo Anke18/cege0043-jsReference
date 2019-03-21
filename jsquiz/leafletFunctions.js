@@ -7,6 +7,7 @@ var xhrQuestionData;
 var questionLayer;
 var questionJSON;
 
+/* Delete this function, only one popup once, in order to not close the question popup
 // for questions, get location
 function onMapClick(e)
 {
@@ -18,7 +19,7 @@ function onMapClick(e)
 }
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
-
+*/
 // here modify code for core functionality1
 function startQuestionDataLoad()
 {
@@ -59,6 +60,7 @@ function loadQuestionData1(questionData)
 function loadQuestionData2()
 {
 	var quizMarker,openMarker;
+	var openSet;
 	//alert("kkk :"+closestQuiz);
 	// getDistanceFromMultiplePoints();
 	// load the geoJSON questionLayer
@@ -88,10 +90,11 @@ function loadQuestionData2()
 			htmlString = htmlString + "<br/><div id=answerUploadResult> The result of the upload goes here </div>";
 			htmlString = htmlString + "</div>";
 			//return L.marker(latlng).bindPopup(htmlString);
-			alert(closestQuiz+"kkk :" +feature.properties.id);
+			//alert(closestQuiz+"kkk :" +feature.properties.id);
 			if(feature.properties.id == closestQuiz)
 			{
-				//alert("got111");
+				//alert(latlng);
+				openSet = latlng;
 				return openMarker = L.marker(latlng).bindPopup(htmlString);
 			}
 			//L.marker(latlng).bindPopup(htmlString);
@@ -103,7 +106,8 @@ function loadQuestionData2()
 		},
 	}).addTo(mymap);
 	openMarker.openPopup();
-	mymap.fitBounds(questionLayer.getBounds());
+	mymap.setView(openSet, 16);
+	//mymap.fitBounds(questionLayer.getBounds());
 }
 
 function checkAnswer(questionID) 
