@@ -40,7 +40,7 @@ function loadQuestionData1(questionData)
 	questionJSON = JSON.parse(questionData);
 	trackLocation();
 	//navigator.geolocation.getCurrentPosition(getDistanceFromMultiplePoints);
-	//loadQuestionData2();//load in web?
+	loadQuestionData2();//load in web?
 }
 
 function loadQuestionData2()
@@ -155,19 +155,22 @@ function checkAnswer(questionID)
 	// check the question radio buttons
 	var correctAnswer = false;
 	var answerSelected = 0;
+	var userSelected = false;
 	for(var i=1; i < 5; i++)
 	{
 		if(document.getElementById(questionID+"_"+i).checked)
 		{
+			userSelected = true;
 			answerSelected = i;
 		}
 		if((document.getElementById(questionID+"_"+i).checked) && (i == answer))
 		{
 			alert ("Well done");
+			userSelected = true;
 			correctAnswer = true;
 		}
 	}
-	if(correctAnswer === false)
+	if(correctAnswer === false && userSelected === true)
 	{
 		// wrong
 		alert("Better luck next time");
@@ -175,7 +178,7 @@ function checkAnswer(questionID)
 	// create answer string to send back
 	var postAnswerString ="port_id="+httpPortNumber+"&question_id="+questionID+"&answer_selected="+answerSelected+"&correct_answer="+answer;
 	
-	//change color test
+	/*change color test
 	questionLayer.eachLayer(function(layer)
 	{
 		//alert(layer.feature.geometry.coordinates);
@@ -185,16 +188,24 @@ function checkAnswer(questionID)
 			var MarkerRight = L.AwesomeMarkers.icon({markerColor: 'lightgreen'});
 			L.marker([layer.feature.geometry.coordinates[1],layer.feature.geometry.coordinates[0]], {icon:MarkerRight}).addTo(mymap);
 		}
-		if(layer.feature.properties.id == questionID && correctAnswer === false)
+		if(layer.feature.properties.id == questionID && correctAnswer === false && userSelected === true)
 		{
 			//layer.closePopup();
 			var MarkerWorng = L.AwesomeMarkers.icon({markerColor: 'lightred'});
 			L.marker([layer.feature.geometry.coordinates[1],layer.feature.geometry.coordinates[0]], {icon:MarkerWorng}).addTo(mymap);
 		}
-	});
-	
-	// uploadData.js for sending back answers
-	//startAnswerUpload(postAnswerString);
-	// count number
-	startAnswerDataLoad();
+	});*/
+	if(userSelected === false)
+	{
+		// wrong
+		alert("There is nothing to submit!");
+	}
+	else
+	{
+		alert("submit!");
+		// uploadData.js for sending back answers
+		startAnswerUpload(postAnswerString);
+		// count number
+		startAnswerDataLoad();
+	}
 }
