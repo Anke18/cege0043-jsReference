@@ -2,19 +2,55 @@ var userMarker;
 var closestQuiz;
 
 // it's important to note that this function only allow to show on the phone?
-function trackLocation()
+/*function trackLocation()
 {
 	alert('getting location');
 	navigator.geolocation.getCurrentPosition(getPosition);
 	//getDistanceFromMultiplePoints();
+}*/
+
+function trackLocation()
+{
+	if(navigator.geolocation)
+	{
+		navigator.geolocation.watchPosition(showPosition);
+		navigator.geolocation.getCurrentPosition(getPosition);
+		//alert("Loading Current Location");
+	}
+	else 
+	{
+		document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
+	}
 }
-	
+
 function getPosition(position)
 {
+	//alert('getting location2');
 	var userPositionString = "User start location: " + "<br>Latitude: " + position.coords.latitude +"<br>Longitude: " + position.coords.longitude;
 	document.getElementById("showLocation").innerHTML = userPositionString;
+	mymap.setView([position.coords.latitude, position.coords.longitude], 18);
 	//getDistance();
 }
+
+function showPosition(position)
+{
+	if (userMarker)
+	{
+		mymap.removeLayer(userMarker);
+	}
+	// remove old points everytime
+	if(questionLayer != undefined) 
+	{
+		mymap.removeLayer(questionLayer);
+	};
+	var myMarker = L.AwesomeMarkers.icon({markerColor: 'pink'});
+    userMarker = L.marker([position.coords.latitude, position.coords.longitude], {icon:myMarker}).addTo(mymap);
+	getDistanceFromMultiplePoints(position);
+    //mymap.locate({setView: true, maxZoom: 16});
+	//getDistance(); 
+	//CF3 do not need
+}
+
 /*
 function getDistance()
 {
@@ -45,7 +81,7 @@ function getDistanceFromMultiplePoints(position)
 			//alert('minDistance : '+minDistance);
 		}
 	}
-	alert("Quiz: " + closestQuiz + " is distance " + minDistance + "away");
+	//alert("Quiz: " + closestQuiz + " is distance " + minDistance + "away");
 	loadQuestionData2();
 }
 
