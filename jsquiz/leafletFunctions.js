@@ -5,6 +5,7 @@ Code for Version4 for AF1
 var client;
 var xhrQuestionData;
 var xhrAnswerData;
+var xhrRanking;
 var questionLayer;
 var questionJSON;
 
@@ -37,31 +38,6 @@ function questionDataResponse()
 		loadQuestionData1(questionData);
 	}
 }
-
-//-------------------------
-function startAnswerDataLoad()
-{
-	xhrAnswerData = new XMLHttpRequest();
-	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
-	url = url + "/getCorrectNum/"+ httpPortNumber;
-	xhrAnswerData.open("GET", url, true);
-	xhrAnswerData.onreadystatechange = answerDataResponse;
-	xhrAnswerData.send();
-}
-
-function answerDataResponse()
-{
-	if(xhrAnswerData.readyState == 4)
-	{
-		// if data is ready, process the data
-		var answerData = xhrAnswerData.responseText;
-		var countStr = answerData.substring(36);//[{"array_to_json":[{"num_questions":2}]}] delete frount
-		var countNum = parseInt(countStr);//get number
-		document.getElementById("answerCorrectResult").innerHTML = "You have correctly answered " + countNum +" questions!";
-	}
-}
-
-//----------------------
 
 // could only test on the phone, which makes it hard to debug
 // have to apart the function to let the questionJSON to be used to get the closestQuiz, and send it back...(mad
@@ -103,7 +79,7 @@ function loadQuestionData2()
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
 			// add div to show upload answer results
 			htmlString = htmlString + "<br/><div id=answerUploadResult> The result of the upload goes here </div>";
-			htmlString = htmlString + "<br/><div id=answerCorrectResult> The count of the correct number goes here </div>";
+			htmlString = htmlString + "<div id=answerCorrectResult> The count of the correct number goes here </div>";
 			htmlString = htmlString + "</div>";
 			//return L.marker(latlng).bindPopup(htmlString);
 			//alert(closestQuiz+"kkk :" +feature.properties.id);
@@ -127,6 +103,54 @@ function loadQuestionData2()
 	//mymap.setView(openSet, 16);
 }
 
+//This code for answer num
+//
+function startAnswerDataLoad()
+{
+	xhrAnswerData = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
+	url = url + "/getCorrectNum/"+ httpPortNumber;
+	xhrAnswerData.open("GET", url, true);
+	xhrAnswerData.onreadystatechange = answerDataResponse;
+	xhrAnswerData.send();
+}
+
+function answerDataResponse()
+{
+	if(xhrAnswerData.readyState == 4)
+	{
+		// if data is ready, process the data
+		var answerData = xhrAnswerData.responseText;
+		var countStr = answerData.substring(36);//[{"array_to_json":[{"num_questions":2}]}] delete frount
+		var countNum = parseInt(countStr);//get number
+		document.getElementById("answerCorrectResult").innerHTML = "You have correctly answered " + countNum +" questions!";
+	}
+}
+//---------------------------------
+//This code for ranking
+//[{"array_to_json":[{"rank":21}]}]
+function startRankingLoad()
+{
+	xhrRanking = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
+	url = url + "/getRanking/"+ httpPortNumber;
+	xhrRanking.open("GET", url, true);
+	xhrRanking.onreadystatechange = rankResponse;
+	xhrRanking.send();
+}
+
+function rankResponse()
+{
+	if(xhrRanking.readyState == 4)
+	{
+		// if data is ready, process the data
+		var rankData = xhrRanking.responseText;
+		var rankStr = rankData.substring(27);//[{"array_to_json":[{"rank":21}]}] delete frount
+		var rankNum = parseInt(rankStr);//get number
+		document.getElementById("rankResult").innerHTML = "You are ranked " + rankNum +" now!";
+	}
+}
+//---------------------------------
 
 function checkAnswer(questionID) 
 {
@@ -174,7 +198,7 @@ function checkAnswer(questionID)
 	});*/
 	
 	// uploadData.js for sending back answers
-	startAnswerUpload(postAnswerString);
+	//startAnswerUpload(postAnswerString);
 	// count number
 	startAnswerDataLoad();
 }
