@@ -45,7 +45,7 @@ function startDataUpload()
 	}
 	else
 	{
-		alert(postString);
+		alert(postString);// let user check again
 		processData(postString);
 	}
 }

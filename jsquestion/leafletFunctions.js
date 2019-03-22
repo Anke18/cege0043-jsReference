@@ -1,11 +1,11 @@
 /*-----------------------------------------------------------
-
 Code for Version3 for Core Functionality3 (in process)
-
 It allow user test their questions and answers but won't send back and save their answer
-
-
 ------------------------------------------------------------*/
+// create a variable that will hold the XMLHttpRequest()
+var client;
+var xhrQuestionData;
+var questionLayer;
 
 // for questions, get location
 function onMapClick(e)
@@ -21,14 +21,13 @@ function onMapClick(e)
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
 
-// create a variable that will hold the XMLHttpRequest()
-var client;
-var xhrQuestionData;
-var questionLayer;
-
 // here modify code for core functionality1
 function startQuestionDataLoad()
 {
+	if(questionLayer != undefined) 
+	{
+		mymap.removeLayer(questionLayer);
+	};
 	//alert("Port2 : " + httpPortNumber);
 	xhrQuestionData = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
@@ -73,9 +72,9 @@ function loadQuestionData(questionData)
 			+feature.properties.id+"_4'/>"+feature.properties.answer_4+"<br><br>";
 			
 			htmlString = htmlString + "<button onclick='checkAnswer("
-			+feature.properties.id + ");return false;'>Submit Answer</button>";
-			
+			+feature.properties.id + ");return false;'>Check Result</button>";
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
+			htmlString = htmlString + "<div> Correct Answer: " + feature.properties["answer_" + feature.properties.correct_answer] +"</div>"; //eavl?
 			htmlString = htmlString + "</div>";
 			return L.marker(latlng).bindPopup(htmlString);
 		},
@@ -90,21 +89,29 @@ function checkAnswer(questionID)
 	// check the question radio buttons
 	var correctAnswer = false;
 	var answerSelected = 0;
-	for(var i=1; i < 5; i++) 
+	var userSelected = false;
+	for(var i=1; i < 5; i++)
 	{
 		if (document.getElementById(questionID+"_"+i).checked)
 		{
+			userSelected = true;
 			answerSelected = i;
 		}
 		if((document.getElementById(questionID+"_"+i).checked) && (i == answer)) 
 		{
-			alert ("Well done");
+			alert ("This is the right answer.");
+			userSelected = true;
 			correctAnswer = true;
 		}
 	}
-	if (correctAnswer === false)
+	if(correctAnswer === false && userSelected === true)
 	{
 		// wrong
-		alert("Better luck next time");
+		alert("This is a wrong answer.");
+	}
+	if(userSelected === false)
+	{
+		// wrong
+		alert("There is no answer!");
 	}
 }
