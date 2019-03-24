@@ -6,7 +6,9 @@ It allow user test their questions and answers but won't send back and save thei
 var client;
 var xhrQuestionData;
 var xhrDQuestionSData;
+var xhrLatestQuestionSData;
 var questionLayer;
+var allQuestionLayer;
 
 // for questions, get location
 function onMapClick(e)
@@ -21,6 +23,12 @@ function onMapClick(e)
 }
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
+
+// set view location
+function addMyQuestion()
+{
+	window.location.hash = "#form";
+}
 
 // get difficult questions
 function startDQuestionsLoad()
@@ -45,13 +53,43 @@ function DQuestionsResponse()
 		{
 			dQuestionString += "Question Setter: " + dQuiz[i].port_id + "\nQuestion Text: " + dQuiz[i].question_text;
 			dQuestionString += "\nCorrect Answer: " + dQuiz[i]["answer_" + dQuiz[i].correct_answer]+"\n\n";
-			//alert("Question Setter: " + dQuiz[i].port_id + "Question Text: " + dQuiz[i].question_text);
 		}
 		alert(dQuestionString);
-		//document.getElementById("rankResult").innerHTML = "You are ranked " + rankNum +" now!";
 	}
 }
 
+// show all latest questions 30312/getAllAddQuestions
+function addAllLatestQuestions()
+{
+	if(allQuestionLayer != undefined) 
+	{
+		mymap.removeLayer(allQuestionLayer);
+	};
+	xhrLatestQuestionSData = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getAllAddQuestions";
+	xhrLatestQuestionSData.open("GET", url, true);
+	xhrLatestQuestionSData.onreadystatechange = latestQuestionsResponse;
+	xhrLatestQuestionSData.send();
+}
+
+function moveAllLatestQuestions()
+{
+	if(allQuestionLayer == undefined) 
+	{
+		alert("Nothing need to be hided yet!");
+	};
+	mymap.removeLayer(allQuestionLayer);
+}
+
+function latestQuestionsResponse()
+{
+	if(xhrLatestQuestionSData.readyState == 4)
+	{
+		// if data is ready, process the data
+		var latestQuestionsData = xhrLatestQuestionSData.responseText;
+		loadQuestionData(latestQuestionsData, 2);
+	}
+}
 
 // here modify code for core functionality1
 function startQuestionDataLoad()
@@ -75,17 +113,17 @@ function questionDataResponse()
 	{
 		// if data is ready, process the data
 		var questionData = xhrQuestionData.responseText;
-		loadQuestionData(questionData);
+		loadQuestionData(questionData, 1);
 	}
 }
 
 // load points version 2
-function loadQuestionData(questionData)
+function loadQuestionData(questionData, type)
 {
 	// convert text to JSON
 	var questionJSON = JSON.parse(questionData);
 	// load the geoJSON questionLayer
-	questionLayer = L.geoJson(questionJSON,
+	var quizLayer = L.geoJson(questionJSON,
 	{
 		// create the quiz points
 		pointToLayer: function(feature, latlng)
@@ -108,9 +146,27 @@ function loadQuestionData(questionData)
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>"+feature.properties.correct_answer+"</div>";
 			htmlString = htmlString + "<div> Correct Answer: " + feature.properties["answer_" + feature.properties.correct_answer] +"</div>"; //eavl?
 			htmlString = htmlString + "</div>";
-			return L.marker(latlng).bindPopup(htmlString);
+			if(type === 1)
+			{
+				return L.marker(latlng).bindPopup(htmlString);
+			}
+			if(type === 2)
+			{
+				var MarkerAll = L.AwesomeMarkers.icon({markerColor: 'lightblue'});
+				return L.marker(latlng,{icon:MarkerAll}).bindPopup(htmlString);
+			}
 		},
-	}).addTo(mymap);
+	});
+	if(type === 1)
+	{
+		questionLayer = quizLayer;
+		questionLayer.addTo(mymap);
+	}
+	if(type === 2)
+	{
+		allQuestionLayer = quizLayer;
+		allQuestionLayer.addTo(mymap);
+	}
 	mymap.fitBounds(questionLayer.getBounds());
 }
 
