@@ -93,7 +93,7 @@ function getDistanceFromMultiplePoints(position)
 			}
 		}
 	}
-	loadQuestionData2();
+	loadQuestionData2(1);
 }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html

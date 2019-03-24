@@ -10,12 +10,25 @@ var questionLayer;
 var questionJSON;
 var xhrRAnswersData;
 var xhrWAnswersData;
+
 var rAnsweredQuiz;
 var wAnsweredQuiz;
+
+var xhrClosestQuestions;
+var closestQuestionsLayer;
+var closestQuestionsJSON;
+
+var xhrLAnswersData;
+var lastAnswersLayer;
+var lastAnswersJSON;
 
 // here modify code for core functionality1
 function startQuestionDataLoad()
 {
+	if(questionLayer != undefined) 
+	{
+		mymap.removeLayer(questionLayer);
+	};
 	getRAnswerResults();
 	getWAnswerResults();
 	//questionLayer.clearLayers();
@@ -37,6 +50,92 @@ function questionDataResponse()
 		// if data is ready, process the data
 		var questionData = xhrQuestionData.responseText;
 		loadQuestionData1(questionData);
+	}
+}
+
+// 
+function startTopScorersLoad()
+{
+	
+}
+
+// http://developer.cege.ucl.ac.uk:30312/getClosestPoints/51.5347391223268/-0.133314304021042 var xhrClosestQuestions;
+// var closestQuestionsLayer;
+function getCurrentLocation()
+{
+	navigator.geolocation.getCurrentPosition(getClosestQuestions);
+}
+
+function getClosestQuestions(position)
+{
+	alert(position);
+	if(closestQuestionsLayer != undefined) 
+	{
+		mymap.removeLayer(closestQuestionsLayer);
+	};
+	xhrClosestQuestions = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getClosestPoints/" + position.coords.latitude + "/" + position.coords.longitude;
+	alert(url);
+	xhrClosestQuestions.open("GET", url, true);
+	xhrClosestQuestions.onreadystatechange = closestQuestionsResponse;
+	xhrClosestQuestions.send();
+}
+
+function moveClosestQuestions()
+{
+	if(closestQuestionsLayer == undefined) 
+	{
+		alert("Nothing need to be hided yet!");
+	};
+	mymap.removeLayer(closestQuestionsLayer);
+}
+
+function closestQuestionsResponse()
+{
+	if(xhrClosestQuestions.readyState == 4)
+	{
+		// if data is ready, process the data
+		var closestQuestionsData = xhrClosestQuestions.responseText;
+		closestQuestionsJSON = JSON.parse(closestQuestionsData);
+		loadQuestionData2(2);
+		//loadQuestionData(latestQuestionsData, 2);
+	}
+}
+
+// load latest answers // http://developer.cege.ucl.ac.uk:30312/getLastAnswers/30312
+function getLastAnswerResults()
+{
+	if(lastAnswersLayer != undefined) 
+	{
+		mymap.removeLayer(lastAnswersLayer);
+	};
+	xhrLAnswersData = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
+	url = url + "/getLastAnswers/"+ httpPortNumber;
+	xhrLAnswersData.open("GET", url, true);
+	xhrLAnswersData.onreadystatechange = lastAnswerResponse;
+	xhrLAnswersData.send();
+}
+
+function moveLastAnswers()
+{
+	if(lastAnswersLayer == undefined) 
+	{
+		alert("Nothing need to be hided yet!");
+	};
+	mymap.removeLayer(lastAnswersLayer);
+}
+
+function lastAnswerResponse()
+{
+	if(xhrLAnswersData.readyState == 4)
+	{
+		//alert("first");
+		// if data is ready, process the data
+		var lastAnswerData = xhrLAnswersData.responseText;
+		lastAnswersJSON = JSON.parse(lastAnswerData);
+		loadQuestionData2(3);
+		//loadQuestionData1(lastAnswerData);
 	}
 }
 
@@ -98,16 +197,37 @@ function loadQuestionData1(questionData)
 	//loadQuestionData2();//load in web?
 }
 
-function loadQuestionData2()
+
+//
+//questionLayer;questionJSON;1
+//closestQuestionsLayer;closestQuestionsJSON;2
+//lastAnswersLayer;lastAnswersJSON;3
+
+function loadQuestionData2(type)
 {
 	var quizMarker,openMarker;
 	var openSet;
 	var MarkerRight = L.AwesomeMarkers.icon({markerColor: 'lightgreen'});
 	var MarkerWorng = L.AwesomeMarkers.icon({markerColor: 'lightred'});
+	var MarkerClosest = L.AwesomeMarkers.icon({markerColor: 'orange'});
+	var getLayer;
+	var getJSON;
+	if(type == 1)
+	{
+		getJSON = questionJSON;
+	}
+	if(type == 2)
+	{
+		getJSON = closestQuestionsJSON;
+	}
+	if(type == 3)
+	{
+		getJSON = lastAnswersJSON;
+	}
 	//alert("kkk :"+closestQuiz);
 	// getDistanceFromMultiplePoints();
 	// load the geoJSON questionLayer
-	questionLayer = L.geoJson(questionJSON,
+	getLayer = L.geoJson(getJSON,
 	{
 		// create the quiz points
 		pointToLayer: function(feature, latlng)
@@ -124,6 +244,26 @@ function loadQuestionData2()
 			+feature.properties.id+"_3'/>"+feature.properties.answer_3+"<br>";
 			htmlString = htmlString + "<input type='radio' name='useranswer' id='"
 			+feature.properties.id+"_4'/>"+feature.properties.answer_4+"<br><br>";
+
+			if(type == 2)
+			{
+				htmlString = htmlString + "<div>Question Setter: " + feature.properties.port_id +"</div>";
+				htmlString = htmlString + "</div>";
+				return quizMarker = L.marker(latlng, {icon:MarkerClosest}).bindPopup(htmlString);
+			}
+			if(type == 3)
+			{
+				htmlString = htmlString + "<div> Correct Answer: " + feature.properties["answer_" + feature.properties.correct_answer] +"</div>";
+				htmlString = htmlString + "</div>";
+				if(feature.properties.answer_correct == true)
+				{
+					return quizMarker = L.marker(latlng, {icon:MarkerRight}).bindPopup(htmlString);
+				}
+				if(feature.properties.answer_correct == false)
+				{
+					return quizMarker = L.marker(latlng, {icon:MarkerWorng}).bindPopup(htmlString);
+				}
+			}
 			
 			for(var i=0;i<rAnsweredQuiz.length;i++)
 			{
@@ -131,7 +271,7 @@ function loadQuestionData2()
 				{
 					//alert("got55555 " + feature.properties.id);
 					//alert(feature.properties.id +" kk "+rAnsweredQuiz[i].question_id);
-					htmlString = htmlString + "<div> Correct Answer: " + feature.properties["answer_" + feature.properties.correct_answer] +"</div>";
+					htmlString = htmlString + "<div>Your Correct Answer: " + feature.properties["answer_" + feature.properties.correct_answer] +"</div>";
 					htmlString = htmlString + "</div>";
 					return quizMarker = L.marker(latlng, {icon:MarkerRight}).bindPopup(htmlString);
 				}
@@ -178,7 +318,22 @@ function loadQuestionData2()
 				return quizMarker = L.marker(latlng).bindPopup(htmlString);
 			}
 		},
-	}).addTo(mymap);
+	});
+	if(type === 1)
+	{
+		questionLayer = getLayer;
+		questionLayer.addTo(mymap);
+	}
+	if(type === 2)
+	{
+		closestQuestionsLayer = getLayer;
+		closestQuestionsLayer.addTo(mymap);
+	}
+	if(type === 3)
+	{
+		lastAnswersLayer = getLayer;
+		lastAnswersLayer.addTo(mymap);
+	}
 	openMarker.openPopup();
 	mymap.setView(openSet, 18);
 	//mymap.fitBounds(questionLayer.getBounds());
@@ -214,6 +369,7 @@ function answerDataResponse()
 //[{"array_to_json":[{"rank":21}]}]
 function startRankingLoad()
 {
+	//startAnswerDataLoad();
 	xhrRanking = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
 	url = url + "/getRanking/"+ httpPortNumber;
@@ -230,6 +386,7 @@ function rankResponse()
 		var rankData = xhrRanking.responseText;
 		var rankStr = rankData.substring(27);//[{"array_to_json":[{"rank":21}]}] delete frount
 		var rankNum = parseInt(rankStr);//get number
+		alert("You are ranked " + rankNum +" now!");
 		document.getElementById("rankResult").innerHTML = "You are ranked " + rankNum +" now!";
 	}
 }
@@ -277,5 +434,6 @@ function checkAnswer(questionID)
 		startAnswerUpload(postAnswerString);
 		// count number
 		startAnswerDataLoad();
+		location.reload();
 	}
 }
