@@ -22,7 +22,7 @@ function trackLocation()
 		document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
 	}
 }
-
+// this could be deleted
 function getPosition(position)
 {
 	//alert('getting location2');
@@ -58,8 +58,10 @@ function getDistance()
 	navigator.geolocation.getCurrentPosition(getDistanceFromMultiplePoints);
 }*/
 
+
 function getDistanceFromMultiplePoints(position)
 {
+	//alert("rrr "+rAnsweredQuiz.length);
 	//alert('getting distance : '+position);
 	//alert(questionJSON[0].features.length);
 	var minDistance = 100000000000;
@@ -68,20 +70,29 @@ function getDistanceFromMultiplePoints(position)
 	for(var i = 0; i < questionJSON[0].features.length; i++)
 	{
 		var obj = questionJSON[0].features[i];
-		//alert("ppp "+questionJSON[0].features[i]);
-		//alert("geometry: "+" i :"+obj.geometry.coordinates[0]+" , "+obj.geometry.coordinates[1]);
-		var distance = calculateDistance(position.coords.latitude,position.coords.longitude,
-		obj.geometry.coordinates[1],obj.geometry.coordinates[0],'K');
-		//alert("111 :" + i + " :" + distance);
-		if (distance < minDistance)
+		var check = false;
+		//alert(obj.properties.id +" kkkk " +rAnsweredQuiz[i].question_id);
+		for(var j=0;j<rAnsweredQuiz.length;j++)
 		{
-			minDistance = distance;
-			closestQuiz = obj.properties.id;
-			count = i;
-			//alert('minDistance : '+minDistance);
+			if(obj.properties.id == rAnsweredQuiz[j].question_id)
+			{
+				check = true;
+			}
+		}
+		if(check === false)
+		{
+			//alert(obj.properties.id +" kkkk " +rAnsweredQuiz[j].question_id);
+			var distance = calculateDistance(position.coords.latitude,position.coords.longitude,
+			obj.geometry.coordinates[1],obj.geometry.coordinates[0],'K');
+			if (distance < minDistance)
+			{
+				minDistance = distance;
+				closestQuiz = obj.properties.id;
+				count = i;
+				//alert('minDistance : '+minDistance);
+			}
 		}
 	}
-	//alert("Quiz: " + closestQuiz + " is distance " + minDistance + "away");
 	loadQuestionData2();
 }
 
