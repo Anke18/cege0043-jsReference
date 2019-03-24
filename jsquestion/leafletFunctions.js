@@ -5,6 +5,7 @@ It allow user test their questions and answers but won't send back and save thei
 // create a variable that will hold the XMLHttpRequest()
 var client;
 var xhrQuestionData;
+var xhrDQuestionSData;
 var questionLayer;
 
 // for questions, get location
@@ -20,6 +21,37 @@ function onMapClick(e)
 }
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
+
+// get difficult questions
+function startDQuestionsLoad()
+{
+	xhrDQuestionSData = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getDifficultQuestions";
+	xhrDQuestionSData.open("GET", url, true);
+	xhrDQuestionSData.onreadystatechange = DQuestionsResponse;
+	xhrDQuestionSData.send();
+}
+
+function DQuestionsResponse()
+{
+	if(xhrDQuestionSData.readyState == 4)
+	{
+		// if data is ready, process the data
+		var dQuizData = xhrDQuestionSData.responseText;
+		var dQuizJSON = JSON.parse(dQuizData);
+		var dQuiz = dQuizJSON[0].array_to_json;
+		var dQuestionString = "";
+		for(var i=0;i<dQuiz.length;i++)
+		{
+			dQuestionString += "Question Setter: " + dQuiz[i].port_id + "\nQuestion Text: " + dQuiz[i].question_text;
+			dQuestionString += "\nCorrect Answer: " + dQuiz[i]["answer_" + dQuiz[i].correct_answer]+"\n\n";
+			//alert("Question Setter: " + dQuiz[i].port_id + "Question Text: " + dQuiz[i].question_text);
+		}
+		alert(dQuestionString);
+		//document.getElementById("rankResult").innerHTML = "You are ranked " + rankNum +" now!";
+	}
+}
+
 
 // here modify code for core functionality1
 function startQuestionDataLoad()
