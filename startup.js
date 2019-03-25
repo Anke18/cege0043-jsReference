@@ -1,9 +1,6 @@
 /*-----------------------------------------------------------
-
-Code for Version3 for Core Functionality3 (in process):
-
-
-
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
 ------------------------------------------------------------*/
 
 // for questions app 

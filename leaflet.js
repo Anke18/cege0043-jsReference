@@ -1,3 +1,8 @@
+/*
+- Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+- Leaflet Map: https://leafletjs.com
+*/
+
 // load the map
 var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 // load the tiles
