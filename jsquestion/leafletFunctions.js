@@ -1,6 +1,7 @@
 /*-----------------------------------------------------------
-Code for Version3 for Core Functionality3 (in process)
-It allow user test their questions and answers but won't send back and save their answer
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+  Leaflet Map: https://leafletjs.com/
 ------------------------------------------------------------*/
 // create a variable that will hold the XMLHttpRequest()
 var client;
@@ -24,15 +25,10 @@ function onMapClick(e)
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
 
-// set view location
-function addMyQuestion()
-{
-	window.location.hash = "#form";
-}
-
 // get difficult questions
 function startDQuestionsLoad()
 {
+	window.location.hash = "#mapid";
 	xhrDQuestionSData = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getDifficultQuestions";
 	xhrDQuestionSData.open("GET", url, true);
@@ -61,6 +57,7 @@ function DQuestionsResponse()
 // show all latest questions 30312/getAllAddQuestions
 function addAllLatestQuestions()
 {
+	window.location.hash = "#mapid";
 	if(allQuestionLayer != undefined) 
 	{
 		mymap.removeLayer(allQuestionLayer);
@@ -74,6 +71,7 @@ function addAllLatestQuestions()
 
 function moveAllLatestQuestions()
 {
+	window.location.hash = "#mapid";
 	if(allQuestionLayer == undefined) 
 	{
 		alert("Nothing need to be hided yet!");
@@ -94,6 +92,7 @@ function latestQuestionsResponse()
 // here modify code for core functionality1
 function startQuestionDataLoad()
 {
+	window.location.hash = "#mapid";
 	if(questionLayer != undefined) 
 	{
 		mymap.removeLayer(questionLayer);

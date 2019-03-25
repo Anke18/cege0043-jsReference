@@ -1,3 +1,8 @@
+/*-----------------------------------------------------------
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+------------------------------------------------------------*/
+
 var client;
 var postString;
 
@@ -45,7 +50,7 @@ function startDataUpload()
 	}
 	else
 	{
-		alert(postString);// let user check again
+		//alert(postString);// let user check again
 		processData(postString);
 	}
 }

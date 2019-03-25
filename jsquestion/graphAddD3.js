@@ -1,8 +1,8 @@
+//Code source: https://jsfiddle.net/354zw0d2/9/
+
 function startD3GraphLoad(selecttype)
 {
-	//Code source: https://jsfiddle.net/354zw0d2/9/
-	//http://developer.cege.ucl.ac.uk:30312/getMyUsers/30312
-	//http://developer.cege.ucl.ac.uk:30312/getAllUsers
+	//selecttype to darw different graph
 	
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber;
 	if(selecttype == 1)
@@ -15,7 +15,7 @@ function startD3GraphLoad(selecttype)
 	{
 		url = url + "/getAllUsers";
 		var container = d3.select("#allusers");
-		d3.select("#allusers > *").remove(); 
+		d3.select("#allusers > *").remove();
 	}
 	
 	var width = 400,
@@ -37,11 +37,12 @@ function startD3GraphLoad(selecttype)
 
 	var xAxis = d3.axisBottom(xScale0).tickSizeOuter(axisTicks.outerSize);
 	var yAxis = d3.axisLeft(yScale).ticks(axisTicks.qty).tickSizeOuter(axisTicks.outerSize);
-
+	
+	// => loop data
 	d3.json(url).then(data => 
 	{
 		
-		alert(url);
+		//alert(url);
 		data = data[0].array_to_json;
 		data = data.map(i => {i.day = i.day; return i;});
 		//

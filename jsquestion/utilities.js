@@ -1,3 +1,8 @@
+/*-----------------------------------------------------------
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+------------------------------------------------------------*/
+
 var httpPortNumber;
 var httpsPortNumber;
 
@@ -10,7 +15,7 @@ function getPort()
 		var doc = parser.parseFromString(xhr.responseText, "application/xml");
 		httpPortNumber= doc.getElementsByTagName("node-port-http").item(0).textContent;
 		httpsPortNumber= doc.getElementsByTagName("node-port-https").item(0).textContent;
-		alert("Port : " + httpPortNumber);
+		//alert("Port : " + httpPortNumber);
 		startQuestionDataLoad();
 	});
 	// depending on whether we are in a browser or on a phone
