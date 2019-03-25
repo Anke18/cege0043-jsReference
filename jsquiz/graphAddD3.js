@@ -1,12 +1,11 @@
 function startTopScorersLoad()
 {
-	//Code source: https://jsfiddle.net/354zw0d2/9/
-	//http://developer.cege.ucl.ac.uk:30312/getMyUsers/30312
-	//http://developer.cege.ucl.ac.uk:30312/getAllUsers
+	//d3 Code adapted from: https://www.htmlgoodies.com/beyond/javascript/generate-a-bar-chart-with-d3.js.html -->
+	
 	window.location.hash = "#picid";
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getTop5";
 	var container = d3.select("#top5scorer");
-	alert(url);
+	//alert(url);
 	d3.select("#top5scorer > *").remove(); 
 	
 	const	svg     = d3.select("svg"),

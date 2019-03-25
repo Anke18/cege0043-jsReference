@@ -1,13 +1,14 @@
+/*-----------------------------------------------------------
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+  Leaflet Map: https://leafletjs.com/
+  distance https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
+------------------------------------------------------------*/
+
 var userMarker;
 var closestQuiz;
 
 // it's important to note that this function only allow to show on the phone?
-/*function trackLocation()
-{
-	alert('getting location');
-	navigator.geolocation.getCurrentPosition(getPosition);
-	//getDistanceFromMultiplePoints();
-}*/
 
 function trackLocation()
 {

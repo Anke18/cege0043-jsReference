@@ -1,5 +1,7 @@
 /*-----------------------------------------------------------
-Code for Version4 for AF1
+  Code reference:
+  Claire EllulCEGE0043: Web and Mobile GIS - Apps and Programming (18/19)
+  Leaflet Map: https://leafletjs.com/
 ------------------------------------------------------------*/
 // create a variable that will hold the XMLHttpRequest()
 var client;
@@ -53,8 +55,7 @@ function questionDataResponse()
 	}
 }
 
-// http://developer.cege.ucl.ac.uk:30312/getClosestPoints/51.5347391223268/-0.133314304021042 var xhrClosestQuestions;
-// var closestQuestionsLayer;
+// http://developer.cege.ucl.ac.uk:30312/getClosestPoints/51.5347391223268/-0.133314304021042 
 function getCurrentLocation()
 {
 	navigator.geolocation.getCurrentPosition(getClosestQuestions);
@@ -62,14 +63,14 @@ function getCurrentLocation()
 
 function getClosestQuestions(position)
 {
-	alert(position);
+	//alert(position);
 	if(closestQuestionsLayer != undefined) 
 	{
 		mymap.removeLayer(closestQuestionsLayer);
 	};
 	xhrClosestQuestions = new XMLHttpRequest();
 	var url = "http://developer.cege.ucl.ac.uk:"+ httpPortNumber + "/getClosestPoints/" + position.coords.latitude + "/" + position.coords.longitude;
-	alert(url);
+	//alert(url);
 	xhrClosestQuestions.open("GET", url, true);
 	xhrClosestQuestions.onreadystatechange = closestQuestionsResponse;
 	xhrClosestQuestions.send();
