@@ -53,12 +53,6 @@ function questionDataResponse()
 	}
 }
 
-// 
-function startTopScorersLoad()
-{
-	
-}
-
 // http://developer.cege.ucl.ac.uk:30312/getClosestPoints/51.5347391223268/-0.133314304021042 var xhrClosestQuestions;
 // var closestQuestionsLayer;
 function getCurrentLocation()
@@ -433,7 +427,7 @@ function checkAnswer(questionID)
 		// uploadData.js for sending back answers
 		startAnswerUpload(postAnswerString);
 		// count number
-		startAnswerDataLoad();
 		location.reload();
+		startAnswerDataLoad();
 	}
 }
